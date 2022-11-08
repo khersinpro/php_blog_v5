@@ -37,8 +37,19 @@ class AuthDb extends Database\DbConnect
         $this->statementCreateSession->bindValue(':userid', $userId);
         $this->statementCreateSession->bindValue(':csrf', $csrf);
         $this->statementCreateSession->execute();
-        setcookie('session', $sessionId, time() + 60 * 60 * 24 * 14, "", "", false, true);
-        setcookie('signature', $signature, time() + 60 * 60 * 24 * 14, "", "", false, true);
+        if (getenv("ENV") && getenv("ENV") === "PRODUCTION") {
+            $prod_options =  [
+                'expires' => time() + 60 * 60 * 24 * 14,
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ];
+            setcookie('session', $sessionId, $prod_options);
+            setcookie('signature', $signature, $prod_options);
+        } else {
+            setcookie('session', $sessionId, time() + 60 * 60 * 24 * 14, "", "", false, true);
+            setcookie('signature', $signature, time() + 60 * 60 * 24 * 14, "", "", false, true);
+        }
         return;
     }
 

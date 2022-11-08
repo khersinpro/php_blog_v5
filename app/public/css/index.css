@@ -15,6 +15,7 @@
 }
 .overflow{
     border-radius: 3px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 .article:hover .img-container {
@@ -29,6 +30,7 @@
 .article h3 {
     font-size: 1.7rem;
     padding: 0 1rem;
+    font-weight: 600git ;
     word-wrap: break-word;
     display: -webkit-box !important;
     -webkit-line-clamp: 2;
@@ -84,7 +86,7 @@
     }
     .article{
         width: 100%;
-        margin: 0;
+        margin: 10px 0;
     }
     .category-container{
         display: none;

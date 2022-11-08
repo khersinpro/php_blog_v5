@@ -48,8 +48,8 @@ class ArticleDB extends Database\DbConnect
         $this->statementReadAllPerCategory = $this->pdo->prepare('SELECT COUNT(id) FROM article WHERE category=:category');
         $this->statementDeleteOne = $this->pdo->prepare('DELETE FROM article WHERE id=:id');
         $this->statementGetUserArticle = $this->pdo->prepare('SELECT * FROM article WHERE author=:id LIMIT 15 OFFSET :offset');
-        $this->statementReadPageArticles = $this->pdo->prepare('SELECT article.*, firstname, lastname FROM article LEFT JOIN user ON article.author = user.id limit 9 OFFSET :index');
-        $this->statementReadPageArticlesPerCategory = $this->pdo->prepare('SELECT article.*, firstname, lastname FROM article LEFT JOIN user ON article.author = user.id WHERE category=:category limit 9 OFFSET :index');
+        $this->statementReadPageArticles = $this->pdo->prepare('SELECT article.*, firstname, lastname FROM article LEFT JOIN user ON article.author = user.id ORDER BY article.id DESC limit 9 OFFSET :index');
+        $this->statementReadPageArticlesPerCategory = $this->pdo->prepare('SELECT article.*, firstname, lastname FROM article LEFT JOIN user ON article.author = user.id WHERE category=:category ORDER BY article.id DESC limit 9 OFFSET :index');
     }
 
 
