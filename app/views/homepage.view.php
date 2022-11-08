@@ -25,7 +25,7 @@
                             <?php foreach ($actualPageArticles as $article) : ?>
                                 <a href="/article?id=<?= $article['id'] ?>" class="article ">
                                     <div class="overflow">
-                                        <div class="img-container" style="background-image:url(<?= $article['image'] ?>"></div>
+                                        <div class="img-container" style="background-image:url(<?= "/article_img/" . $article['image'] ?>"></div>
                                     </div>
                                     <div class="article-author">
                                         <p><?= mb_strtoupper($article['category'])  ?></p>

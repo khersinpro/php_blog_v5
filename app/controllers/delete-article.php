@@ -19,6 +19,7 @@ if($currentUser && $_SERVER['REQUEST_METHOD'] === 'POST'){
         $article = $articleDB->fetchOne($id);
         if($article['author'] === $currentUser['id']){
             $articleDB->deleteOne($id);
+            unlink(__DIR__.'/../public/article_img/'.$article['image']);
         }
     }
 }

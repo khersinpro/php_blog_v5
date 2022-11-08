@@ -55,7 +55,6 @@ class ArticleDB extends Database\DbConnect
 
     public function fetchAll(): int
     {
-
         $this->statementReadAll->execute();
         return $this->statementReadAll->fetch(\PDO::FETCH_NUM)[0];
     }

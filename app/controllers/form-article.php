@@ -31,10 +31,8 @@ if ($id) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $_POST = filter_input_array(INPUT_POST, [
         'title' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-        'image' => FILTER_SANITIZE_URL,
         'category' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
         'content' => [
             'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
@@ -42,11 +40,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ],
         'csrf' => FILTER_SANITIZE_FULL_SPECIAL_CHARS
     ]);
+
     $title = $_POST['title'] ?? '';
-    $image = $_POST['image'] ?? '';
+    $image = $image ?? '';
     $category = $_POST['category'] ?? '';
     $content = $_POST['content'] ?? '';
     $csrfToken = $_POST['csrf'] ?? '';
+
+    // Gestion d'image
+    // Control si le fichier à bien été envoyer et qu'il n'y ai pas d'erreur
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+        // Controle de la taille du fichier ( en octet , 1 000 000 octets = 1mo )
+        if ($_FILES['image']['size'] > 6000000) {
+            $errors['image'] = 'Taille du fichier trop élevé';
+        } else {
+            // Tableau de mimetype autorisé
+            $allowedExtensions = [
+                'png' => 'image/png',
+                'jpe' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'jpg' => 'image/jpeg',
+                'webp' => 'image/webp'
+            ];
+            // Extention du fichier
+            $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+            
+            // Controle de la validité du mimetype du fichier
+            if (in_array($extension, $allowedExtensions) || array_key_exists($extension, $allowedExtensions)) {
+                // Vérification de l'existance du dossier / création du dossier
+                if ( !file_exists( __DIR__.'/../public/article_img' ) && !is_dir( __DIR__.'/../public/article_img' ) ) {
+                    mkdir(__DIR__.'/../public/article_img' );       
+                } 
+                // Si c'est une modification d'article, on supprime l'image précedente
+                if ($id) {
+                    unlink(__DIR__.'/../public/article_img/'.$image);
+                }
+                // Ensuite on stock le fichier
+                $from = $_FILES['image']['tmp_name'];
+                $image = md5(uniqid()).".$extension";
+                $to = __DIR__.'/../public/article_img/'.$image;
+                move_uploaded_file($from, $to);
+            } else {
+                $errors['image'] = "Le format du fichier est incorrect.";
+            }
+        }
+    } else {
+        $errors['image'] = 'Une erreur est survenu, veuillez réessayer'.$_FILES['image']['error'];
+        // Si l'utilisateur n'a pas modifier l'image de son post, on efface l'erreur de l'array
+        if ($id && isset($_FILES['image']) && $_FILES['image']['error'] === 4) {
+            $errors['image'] = '';
+        }
+    }
+    // Fin de gestion d'image
 
     $csrfProtection = $authDb->csrfProtection($csrfToken, $currentUser['csrfToken']);
     if (!$csrfProtection) {
@@ -60,12 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['title'] = ERROR_TITLE_TOO_SHORT;
     }
 
-    if (!$image) {
-        $errors['image'] = ERROR_REQUIRED;
-    } elseif (!filter_var($image, FILTER_VALIDATE_URL)) {
-        $errors['image'] = ERROR_IMAGE_URL;
-    }
-
     if (!$category) {
         $errors['category'] = ERROR_REQUIRED;
     }
@@ -75,7 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (mb_strlen($content) < 50) {
         $errors['content'] = ERROR_CONTENT_TOO_SHORT;
     }
-
 
     if (empty(array_filter($errors, fn ($e) => $e !== ''))) {
         if ($id) {
@@ -96,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         header('Location: /');
     }
+
 }
 
 require '../views/form-article.view.php';

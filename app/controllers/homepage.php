@@ -38,8 +38,8 @@ if ($selectedCat) {
 } else {
     $articles = $articleDB->fetchAll();
     $pagesLength = ceil($articles / 9);
-    if ($currentPage > $pagesLength) {
-        throw new Exception("La page n'existe pas");
+    if ($pagesLength > 0 && $currentPage > $pagesLength) {
+        throw new Exception("La page n'existe pass");
         exit;
     }
     $actualPageArticles = $articleDB->fetchPageArticles($offset);

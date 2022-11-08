@@ -23,7 +23,7 @@ $currentPage = (int)$page;
 $pageLength = ceil($articlesLength / 15);
 $offset = ($currentPage - 1) * 9;
 
-if($currentPage < 0 || $currentPage > $pageLength ) {
+if($pageLength > 0 && ( $currentPage < 0 || $currentPage > $pageLength ) ) {
     throw new Exception('Cette page n\'existe pas');
     exit;
 }

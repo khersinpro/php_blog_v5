@@ -13,7 +13,7 @@
         <div class="content">
             <div class="article-container">
                 <a class="article-back" href="/">Retour à la liste des articles</a>
-                <div class="article-cover-img" style="background-image:url(<?= $article['image'] ?>)"></div>
+                <div class="article-cover-img" style="background-image:url(<?= "/article_img/" . $article['image'] ?>)"></div>
                 <h1 class="article-title"><?= $article['title'] ?></h1>
                 <div class="separator"></div>
                 <p class="article-content"><?= $article['content'] ?></p>

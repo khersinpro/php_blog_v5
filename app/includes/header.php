@@ -6,7 +6,7 @@ $currentUser = $currentUser ?? false;
     <a href="/" class="logo">Mon Blog</a>
     <div class="header-mobile">
         <div class="header-mobile-icon">
-            <img src="/image/mobile-menu.png" alt="">
+            <i class="fa-solid fa-bars"></i>
         </div>
         <ul class="header-mobile-list">
             <?php if($currentUser): ?>
