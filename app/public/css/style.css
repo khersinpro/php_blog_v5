@@ -208,11 +208,37 @@ li.header-profile:hover{
 footer {
     background: var(--dark);
     display: flex;
-    flex-flow: row-reverse;
+    flex-direction: column;
     color:var(--text-color-light);
     padding:3.5rem;
 }
+.media{
+    width: 150px;
+}
+.media-title{
+    font-style: 18px;
+    font-weight: 500;
+    margin-bottom: 11px;
+}
+.media-item {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+}
+.media-item i {
+    margin: 0px 20px;
+}
+.copyright{
+    display: block;
+    margin-left: auto;
+    font-size: 12px;
+}
 
+@media (max-width: 500px){
+    .media{
+        margin-bottom: 25px;
+    }
+}
 /* content  */
 
 .content {

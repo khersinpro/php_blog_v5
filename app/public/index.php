@@ -34,8 +34,8 @@ $router->register('/error', function () {
 try {
     $router->resolve($_SERVER['REQUEST_URI']);
 } catch (Exception $e) {
-    // header('Location: /error');
-    echo $e->getMessage();
+    header('Location: /error');
+    // echo $e->getMessage();
 }
 
 
