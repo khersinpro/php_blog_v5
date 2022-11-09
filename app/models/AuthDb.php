@@ -37,7 +37,7 @@ class AuthDb extends Database\DbConnect
         $this->statementCreateSession->bindValue(':userid', $userId);
         $this->statementCreateSession->bindValue(':csrf', $csrf);
         $this->statementCreateSession->execute();
-        if (getenv("ENV") && getenv("ENV") === "PRODUCTION") {
+        if (getenv("PROD") && getenv("PROD") === "PRODUCTION") {
             $prod_options =  [
                 'expires' => time() + 60 * 60 * 24 * 14,
                 'secure' => true,
@@ -47,8 +47,12 @@ class AuthDb extends Database\DbConnect
             setcookie('session', $sessionId, $prod_options);
             setcookie('signature', $signature, $prod_options);
         } else {
-            setcookie('session', $sessionId, time() + 60 * 60 * 24 * 14, "", "", false, true);
-            setcookie('signature', $signature, time() + 60 * 60 * 24 * 14, "", "", false, true);
+            $dev_options =  [
+                'expires' => time() + 60 * 60 * 24 * 14,
+                'httponly' => true,
+            ];
+            setcookie('session', $sessionId, $dev_options);
+            setcookie('signature', $signature, $dev_options);
         }
         return;
     }
@@ -80,7 +84,7 @@ class AuthDb extends Database\DbConnect
                     $user = $this->statementReadUser->fetch();
                     if ($user) {
                         $csrfToken = hash_hmac('sha256', $session['csrf'], 'development');
-                        $user = [...$user, 'csrfToken' => $csrfToken];
+                        $user['csrfToken'] = $csrfToken;
                     }
                 }
             }
